@@ -1,12 +1,12 @@
 # Commit Conventions
 This repository uses the following syntax for commits:
 
-    <type>(<scope>): <message>
+    <type>(<scope>) : <message>
     <description>
 
 ## Example
 ```
-$ git commit -m "docs(readme): update project documention" -m "description"
+$ git commit -m "docs(readme) : update project documention" -m "description"
 ```
 
 
@@ -37,14 +37,14 @@ commit. It serves as a brief summary of what the commit is accomplishing.
 
 ## More Examples
 ```
-git commit -m "init(app): create app user in django project"
-git commit -m "feat(user): add registration form"
-git commit -m "style(css): adjust spacing in stylesheets"
-git commit -m "refactor(api): improve error handling"
-git commit -m "chore(build): update dependencies for configs"
-git commit -m "perf(api): optimize database queries, faster response"
-git commit -m "fix(posts): resolve issue with comments"
-git commit -m "delete(api): remove test api database"
-git commit -m "test(user): add unit tests for login functionality"
-git commit -m "docs(readme): update installation instructions"
+git commit -m "init(app) : create app user in django project"
+git commit -m "feat(user) : add registration form"
+git commit -m "style(css) : adjust spacing in stylesheets"
+git commit -m "refactor(api) : improve error handling"
+git commit -m "chore(build) : update dependencies for configs"
+git commit -m "perf(api) : optimize database queries, faster response"
+git commit -m "fix(posts) : resolve issue with comments"
+git commit -m "delete(api) : remove test api database"
+git commit -m "test(user) : add unit tests for login functionality"
+git commit -m "docs(readme) : update installation instructions"
 ```
