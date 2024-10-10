@@ -84,3 +84,7 @@ class TimeStampBaseModel(models.Model):
     class Meta:
         abstract = True
 
+
+class BaseModel(SoftDeleteBaseModel, TimeStampBaseModel):
+    class Meta:
+        abstract = True
