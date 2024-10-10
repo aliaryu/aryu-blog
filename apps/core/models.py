@@ -8,7 +8,8 @@ class SoftDeleteQuerySet(models.QuerySet):
     delete.queryset_only = True
 
     def hard_delete(self):
-        return super().delete()
+        raise NotImplementedError
+        # return super().delete()
 
     hard_delete.queryset_only = True
 
@@ -18,7 +19,7 @@ class SoftDeleteQuerySet(models.QuerySet):
     restore.queryset_only = True
 
 
-class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet, "SoftDeleteManager")):
+class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet)):
     def get_queryset(self):
         return super().get_queryset().filter(is_delete=False)
 
