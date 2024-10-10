@@ -16,4 +16,15 @@ class SoftDeleteQuerySet(models.QuerySet):
         return self.update(is_delete=False)
 
     restore.queryset_only = True
-    
+
+
+class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet, "SoftDeleteManager")):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_delete=False)
+
+    def archive(self):
+        return super().get_queryset()
+
+    def deleted(self):
+        return super().get_queryset().filter(is_delete=True)
+
