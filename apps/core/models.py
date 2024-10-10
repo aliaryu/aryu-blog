@@ -69,3 +69,18 @@ class SoftDeleteBaseModel:
         raise NotImplementedError
         # super().delete()
 
+
+class TimeStampBaseModel(models.Model):
+    create_at = models.DateTimeField(
+        verbose_name = _("create at"),
+        auto_now_add = True,
+    )
+
+    update_at = models.DateTimeField(
+        verbose_name = _("update at"),
+        auto_now = True,
+    )
+
+    class Meta:
+        abstract = True
+
