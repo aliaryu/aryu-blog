@@ -1,11 +1,24 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 
 class SoftDeleteQuerySet(models.QuerySet):
     def delete(self):
-        return self.update(is_delete=True)
+        return self.update(
+            is_deleted = True,
+            deleted_at = timezone.now(),
+        )
 
     delete.queryset_only = True
+
+    def restore(self):
+        return self.update(
+            is_deleted = False,
+            deleted_at = None,
+        )
+
+    restore.queryset_only = True
 
     def hard_delete(self):
         raise NotImplementedError
@@ -13,19 +26,46 @@ class SoftDeleteQuerySet(models.QuerySet):
 
     hard_delete.queryset_only = True
 
-    def restore(self):
-        return self.update(is_delete=False)
-
-    restore.queryset_only = True
-
 
 class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet)):
     def get_queryset(self):
-        return super().get_queryset().filter(is_delete=False)
+        return super().get_queryset().filter(is_deleted=False)
 
     def archive(self):
         return super().get_queryset()
 
     def deleted(self):
-        return super().get_queryset().filter(is_delete=True)
+        return super().get_queryset().filter(is_deleted=True)
+
+
+class SoftDeleteBaseModel:
+    is_deleted = models.BooleanField(
+        verbose_name = _("is deleted"),
+        null = False,
+        blank = True,
+        default = False,
+    )
+
+    deleted_at = models.DateTimeField(
+        verbose_name = _("deleted at"),
+        null = True,
+        blank = True
+    )
+
+    class Meta:
+        abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_delete = True
+        self.deleted_at = timezone.now()
+        self.save()
+
+    def restore(self):
+        self.is_delete = False
+        self.deleted_at = None
+        self.save()
+
+    def hard_delete(self):
+        raise NotImplementedError
+        # super().delete()
 
