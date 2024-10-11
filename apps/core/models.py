@@ -56,12 +56,12 @@ class SoftDeleteModel(models.Model):
         abstract = True
 
     def delete(self, using=None, keep_parents=False):
-        self.is_delete = True
+        self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save()
 
     def restore(self):
-        self.is_delete = False
+        self.is_deleted = False
         self.deleted_at = None
         self.save()
 
