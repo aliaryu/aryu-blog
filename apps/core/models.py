@@ -70,7 +70,7 @@ class SoftDeleteModel:
         # super().delete()
 
 
-class TimeStampBaseModel(models.Model):
+class TimeStampModel(models.Model):
     create_at = models.DateTimeField(
         verbose_name = _("create at"),
         auto_now_add = True,
