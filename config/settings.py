@@ -75,7 +75,7 @@ TIME_ZONE = config("TIME_ZONE", default="UTC")
 USE_I18N = True
 USE_TZ = True
 
-# AUTH_USER_MODEL = ?
+AUTH_USER_MODEL = "user.User"
 
 # MEDIA
 MEDIA_URL = "media/"
