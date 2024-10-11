@@ -22,10 +22,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # EXTERNAL APPS
-    'rest_framework',
+    "rest_framework",
 
     # INTERNAL APPS
-    "apps.core"
+    "apps.core",
+    "apps.user",
 
 ]
 
