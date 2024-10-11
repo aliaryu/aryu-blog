@@ -38,7 +38,7 @@ class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet)):
         return super().get_queryset().filter(is_deleted=True)
 
 
-class SoftDeleteModel:
+class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(
         verbose_name = _("is deleted"),
         null = False,
