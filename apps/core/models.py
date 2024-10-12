@@ -38,7 +38,7 @@ class SoftDeleteManager(models.Manager.from_queryset(SoftDeleteQuerySet)):
         return super().get_queryset().filter(is_deleted=True)
 
 
-class SoftDeleteBaseModel:
+class SoftDeleteModel(models.Model):
     is_deleted = models.BooleanField(
         verbose_name = _("is deleted"),
         null = False,
@@ -56,12 +56,12 @@ class SoftDeleteBaseModel:
         abstract = True
 
     def delete(self, using=None, keep_parents=False):
-        self.is_delete = True
+        self.is_deleted = True
         self.deleted_at = timezone.now()
         self.save()
 
     def restore(self):
-        self.is_delete = False
+        self.is_deleted = False
         self.deleted_at = None
         self.save()
 
@@ -70,7 +70,7 @@ class SoftDeleteBaseModel:
         # super().delete()
 
 
-class TimeStampBaseModel(models.Model):
+class TimeStampModel(models.Model):
     create_at = models.DateTimeField(
         verbose_name = _("create at"),
         auto_now_add = True,
@@ -85,6 +85,8 @@ class TimeStampBaseModel(models.Model):
         abstract = True
 
 
-class BaseModel(SoftDeleteBaseModel, TimeStampBaseModel):
+class BaseModel(SoftDeleteModel, TimeStampModel):
     class Meta:
         abstract = True
+
+    objects = SoftDeleteManager()
