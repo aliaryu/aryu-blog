@@ -41,6 +41,11 @@ class UserManager(SoftDeleteManager, BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+class UserRelatedManager(SoftDeleteManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False, user__is_deleted=False)
+
+
 class User(SoftDeleteModel, AbstractUser):
     username = None
 
@@ -69,3 +74,4 @@ class User(SoftDeleteModel, AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
+
