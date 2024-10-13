@@ -120,7 +120,7 @@ class Profile(SoftDeleteModel):
 
     image = models.ImageField(
         verbose_name = _("image"),
-        upload_to = "user_image/",
+        upload_to = "profile_image/",
         blank = True,
         null = True,
         validators = [
