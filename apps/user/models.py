@@ -8,6 +8,7 @@ from apps.core.models import (
     SoftDeleteModel,
     SoftDeleteManager,
 )
+from django.core.validators import FileExtensionValidator
 
 
 class UserManager(SoftDeleteManager, BaseUserManager):
@@ -41,6 +42,11 @@ class UserManager(SoftDeleteManager, BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+class UserRelatedManager(SoftDeleteManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False, user__is_deleted=False)
+
+
 class User(SoftDeleteModel, AbstractUser):
     username = None
 
@@ -69,3 +75,71 @@ class User(SoftDeleteModel, AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
+
+
+class Profile(SoftDeleteModel):
+    user = models.OneToOneField(
+        verbose_name = _("user"),
+        to = "User",
+        on_delete = models.DO_NOTHING,
+        related_name = "profile",
+    )
+
+    biography = models.TextField(
+        verbose_name = _("biography"),
+        blank = True,
+        null = True,
+    )
+
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+
+    gender = models.CharField(
+        verbose_name = _("gender"),
+        max_length = 1, 
+        choices = GENDER_CHOICES,
+        blank = True,
+        null = True,
+    )
+
+    birth_date = models.DateField(
+        verbose_name = _("birth date"),
+        blank = True,
+        null = True,
+    )
+
+    phone_number = models.CharField(
+        verbose_name = _("phone number"),
+        max_length = 15,
+        blank = True,
+        null = True,
+    )
+
+    image = models.ImageField(
+        verbose_name = _("image"),
+        upload_to = "user_image/",
+        blank = True,
+        null = True,
+        validators = [
+            FileExtensionValidator(
+                allowed_extensions = ("jpg", "png")
+            )
+        ]
+    )
+
+    profile_view = models.PositiveIntegerField(
+        verbose_name = _("profile view"),
+        default = 1,
+    )
+
+    objects = UserRelatedManager()
+
+    class Meta:
+        verbose_name = _("profile")
+        verbose_name_plural = _("profiles")
+
+    def __str__(self):
+        return f"{self.user.email}"

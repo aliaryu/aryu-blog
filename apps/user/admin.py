@@ -1,13 +1,29 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
-from .models import User
+from .models import (
+    User,
+    Profile,
+)
+
+
+class ProfileInline(admin.StackedInline):
+    model = Profile
+    verbose_name = _("profile information")
+    classes = ["collapse"]
+    extra = 0
+
+    def get_readonly_fields(self, request, obj=None):
+        return ("deleted_at",)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("user")
 
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
     model = User
-    # inlines = []
+    inlines = (ProfileInline,)
     ordering = ("-id",)
     search_fields = ("email",)
     # list_display_links = None
@@ -32,3 +48,16 @@ class UserAdmin(UserAdmin):
             return self.model.objects.archive()
         else:
             return super().get_queryset(request)
+
+
+# @admin.register(Profile)
+# class ProfileAdmin(admin.ModelAdmin):
+#     model = Profile
+
+#     # To save time, complete implementation is omitted.
+
+#     def get_queryset(self, request):
+#         if request.user.is_superuser:
+#             return self.model.objects.archive().select_related("user")
+#         else:
+#             return super().get_queryset(request).select_related("user")
