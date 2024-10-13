@@ -50,14 +50,14 @@ class UserAdmin(UserAdmin):
             return super().get_queryset(request)
 
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    model = Profile
+# @admin.register(Profile)
+# class ProfileAdmin(admin.ModelAdmin):
+#     model = Profile
 
-    # To save time, complete implementation is omitted.
+#     # To save time, complete implementation is omitted.
 
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return self.model.objects.archive().select_related("user")
-        else:
-            return super().get_queryset(request).select_related("user")
+#     def get_queryset(self, request):
+#         if request.user.is_superuser:
+#             return self.model.objects.archive().select_related("user")
+#         else:
+#             return super().get_queryset(request).select_related("user")
