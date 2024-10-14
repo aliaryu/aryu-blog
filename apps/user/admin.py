@@ -64,4 +64,4 @@ class UserAdmin(UserAdmin):
 #             return super().get_queryset(request).select_related("user")
 
 
-admin.site.register([Follow,])
+admin.site.register([Profile, Follow,])
