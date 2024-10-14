@@ -80,7 +80,7 @@ class User(SoftDeleteModel, AbstractUser):
         return f"{self.email}"
 
 
-class Profile(SoftDeleteModel):
+class Profile(SoftDeleteModel, TimeStampModel):
     user = models.OneToOneField(
         verbose_name = _("user"),
         to = "User",
