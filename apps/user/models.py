@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 from apps.core.models import (
     SoftDeleteModel,
     SoftDeleteManager,
+    TimeStampModel,
 )
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
@@ -154,3 +155,46 @@ class Profile(SoftDeleteModel):
 
     def __str__(self):
         return f"{self.user.email}"
+
+
+class Follow(SoftDeleteModel, TimeStampModel):
+    follower = models.ForeignKey(
+        verbose_name = _("follower"),
+        # supose user_id field, who start follow
+        help_text = _("the one who follows"),
+        to = "User",
+        on_delete = models.DO_NOTHING,
+        related_name = "followings",
+    )
+
+    following = models.ForeignKey(
+        verbose_name = _("following"),
+        # supose follow_for field, who who receives follow
+        help_text = _("the one who is followed"),
+        to = "User",
+        on_delete = models.DO_NOTHING,
+        related_name = "followers",
+    )
+
+    objects = UserRelatedManager()
+
+    def clean(self):
+        super().clean()
+        if self.follower == self.following:
+            raise ValidationError({'follower': _("cant follow yourself.")})
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["follower", "following"],
+                name = "unique_follow",
+            ),
+
+            models.CheckConstraint(
+                check = ~ models.Q(follower=models.F("following")),
+                name="same_follower_following",
+            ),
+        ]
+
+    def __str__(self):
+        return f"'{self.follower.email}' follows '{self.following.email}'"
