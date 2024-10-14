@@ -72,15 +72,6 @@ class User(SoftDeleteModel, AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
-    def clean(self):
-        super().clean()
-        if self.birth_date and self.birth_date > timezone.now().date():
-            raise ValidationError({'birth_date': _("birth date cannot be in future.")})
-
-        width, height = self.image.width, self.image.height
-        if width != height:
-            raise ValidationError({'image': _("image must be square.")})
-
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
@@ -148,6 +139,15 @@ class Profile(SoftDeleteModel):
     )
 
     objects = UserRelatedManager()
+
+    def clean(self):
+        super().clean()
+        if self.birth_date and self.birth_date > timezone.now().date():
+            raise ValidationError({'birth_date': _("birth date cannot be in future.")})
+
+        width, height = self.image.width, self.image.height
+        if width != height:
+            raise ValidationError({'image': _("image must be square.")})
 
     class Meta:
         verbose_name = _("profile")
