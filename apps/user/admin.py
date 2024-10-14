@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import (
     User,
     Profile,
+    Follow,
 )
 
 
@@ -61,3 +62,6 @@ class UserAdmin(UserAdmin):
 #             return self.model.objects.archive().select_related("user")
 #         else:
 #             return super().get_queryset(request).select_related("user")
+
+
+admin.site.register([Follow,])
