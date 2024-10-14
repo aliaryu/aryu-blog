@@ -177,7 +177,6 @@ class Follow(SoftDeleteModel, TimeStampModel):
     )
 
     objects = UserRelatedManager()
-
     
     class Meta:
         constraints = [
@@ -185,4 +184,10 @@ class Follow(SoftDeleteModel, TimeStampModel):
                 fields = ["follower", "following"],
                 name = "unique_follow",
             ),
+
+            models.CheckConstraint(
+                check = ~ models.Q(follower=models.F("following")),
+                name="same_follower_following",
+            ),
         ]
+
