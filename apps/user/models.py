@@ -177,6 +177,11 @@ class Follow(SoftDeleteModel, TimeStampModel):
     )
 
     objects = UserRelatedManager()
+
+    def clean(self):
+        super().clean()
+        if self.follower == self.following:
+            raise ValidationError({'follower': _("cant follow yourself.")})
     
     class Meta:
         constraints = [
