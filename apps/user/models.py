@@ -191,3 +191,5 @@ class Follow(SoftDeleteModel, TimeStampModel):
             ),
         ]
 
+    def __str__(self):
+        return f"'{self.follower.email}' follows '{self.following.email}'"
