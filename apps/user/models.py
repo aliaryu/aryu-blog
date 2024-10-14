@@ -177,3 +177,12 @@ class Follow(SoftDeleteModel, TimeStampModel):
     )
 
     objects = UserRelatedManager()
+
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields = ["follower", "following"],
+                name = "unique_follow",
+            ),
+        ]
