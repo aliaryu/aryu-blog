@@ -8,6 +8,7 @@ from apps.core.models import (
     SoftDeleteModel,
     SoftDeleteManager,
     TimeStampModel,
+    BaseModel,
 )
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
@@ -157,7 +158,7 @@ class Profile(SoftDeleteModel, TimeStampModel):
         return f"{self.user.email}"
 
 
-class Follow(SoftDeleteModel, TimeStampModel):
+class Follow(BaseModel):
     follower = models.ForeignKey(
         verbose_name = _("follower"),
         # supose user_id field, who start follow
@@ -175,8 +176,6 @@ class Follow(SoftDeleteModel, TimeStampModel):
         on_delete = models.DO_NOTHING,
         related_name = "followers",
     )
-
-    objects = SoftDeleteManager()
 
     def clean(self):
         super().clean()
