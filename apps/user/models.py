@@ -191,7 +191,7 @@ class Follow(SoftDeleteModel, TimeStampModel):
             ),
 
             models.CheckConstraint(
-                check = ~ models.Q(follower=models.F("following")),
+                condition = ~ models.Q(follower=models.F("following")),
                 name="same_follower_following",
             ),
         ]
