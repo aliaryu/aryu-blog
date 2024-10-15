@@ -176,7 +176,7 @@ class Follow(SoftDeleteModel, TimeStampModel):
         related_name = "followers",
     )
 
-    objects = UserRelatedManager()
+    objects = SoftDeleteManager()
 
     def clean(self):
         super().clean()
