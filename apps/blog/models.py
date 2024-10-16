@@ -1,12 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from apps.core.models import BaseModel
+from django.utils.text import slugify
+from time import time
 
 
 class Post(BaseModel):
     author = models.ForeignKey(
         verbose_name = _("author"),
-        to = "User",
+        to = "users.User",
         on_delete = models.DO_NOTHING,
         related_name = "posts",
     )
@@ -44,11 +46,13 @@ class Post(BaseModel):
         default = True,
     )
 
-    tags = models.ManyToManyField(
-        verbose_name = _("tags"),
-        to = "Tag",
-        related_name = "posts",
-    )
+    # tags = models.ManyToManyField(
+    #     verbose_name = _("tags"),
+    #     to = "Tag",
+    #     related_name = "posts",
+    # )
+
+
 
     class Meta:
         verbose_name = _("post")
