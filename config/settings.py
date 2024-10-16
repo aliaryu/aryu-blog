@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     # INTERNAL APPS
     "apps.core",
     "apps.users",
+    "apps.blog",
 
 ]
 
