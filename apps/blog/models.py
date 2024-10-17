@@ -5,6 +5,21 @@ from django.utils.text import slugify
 from time import time
 
 
+class Tag(BaseModel):
+    tag_name = models.CharField(
+        verbose_name = _("tag"),
+        max_length = 255,
+        unique = True,
+    )
+
+    class Meta:
+        verbose_name = _("tag")
+        verbose_name_plural = _("tags")
+
+    def __str__(self):
+        return f"{self.tag_name}"
+
+
 class Post(BaseModel):
     author = models.ForeignKey(
         verbose_name = _("author"),
@@ -46,11 +61,11 @@ class Post(BaseModel):
         default = True,
     )
 
-    # tags = models.ManyToManyField(
-    #     verbose_name = _("tags"),
-    #     to = "Tag",
-    #     related_name = "posts",
-    # )
+    tags = models.ManyToManyField(
+        verbose_name = _("tags"),
+        to = "Tag",
+        related_name = "posts",
+    )
 
     def save(self, *args, **kwargs):
         if not self.id:
