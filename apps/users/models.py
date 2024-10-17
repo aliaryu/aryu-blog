@@ -13,6 +13,7 @@ from apps.core.models import (
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from config import settings
 
 
 class UserManager(SoftDeleteManager, BaseUserManager):
@@ -30,7 +31,12 @@ class UserManager(SoftDeleteManager, BaseUserManager):
     def create_user(self, email, password, **extra_fields):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        extra_fields.setdefault("is_active", False)
+        
+        if settings.DEBUG:
+            extra_fields.setdefault("is_active", True)
+        else:
+            extra_fields.setdefault("is_active", False)
+
         return self._create_user(email, password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
