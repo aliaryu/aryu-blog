@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from apps.core.models import BaseModel
 from django.utils.text import slugify
 from time import time
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Tag(BaseModel):
@@ -65,6 +66,11 @@ class Post(BaseModel):
         verbose_name = _("tags"),
         to = "Tag",
         related_name = "posts",
+    )
+
+    comments = GenericRelation(
+        to = "comments.Comment",
+        # related_query_name = "post_comments",
     )
 
     def save(self, *args, **kwargs):
