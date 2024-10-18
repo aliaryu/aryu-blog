@@ -73,6 +73,12 @@ class Post(BaseModel):
         # related_query_name = "post_comments",
     )
 
+    likes = models.ManyToManyField(
+        verbose_name = _("likes"),
+        to = "users.User",
+        related_name = "likes",
+    )
+
     def save(self, *args, **kwargs):
         if not self.id:
             slugify_title = slugify(self.title, allow_unicode=True)
