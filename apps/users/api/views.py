@@ -18,6 +18,14 @@ class UserListView(generics.ListAPIView):
         )
 
 
+class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = UserDetailSerializer
+
+    def get_queryset(self):
+        return User.objects.all().select_related("profile").annotate(
+            followers_count = Count("followers", distinct=True),
+            followings_count = Count("followings", distinct=True)
+        )
 
 
 class UserFollowersView(generics.ListAPIView):
