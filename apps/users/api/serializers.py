@@ -36,4 +36,4 @@ class UserFollowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["email"]
+        fields = ["id", "email"]
