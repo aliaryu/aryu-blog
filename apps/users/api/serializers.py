@@ -14,7 +14,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    followers_count = serializers.IntegerField(read_only=True)
+    followings_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "profile"]
+        fields = ["id", "email", "first_name", "last_name", "profile", "followers_count", "followings_count"]
