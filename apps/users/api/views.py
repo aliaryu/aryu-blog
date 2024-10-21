@@ -22,3 +22,10 @@ class UserFollowersView(generics.ListAPIView):
 
     def get_queryset(self):
         return User.objects.all().filter(followings__following=self.kwargs["pk"])
+
+
+class UserFollowingsView(generics.ListAPIView):
+    serializer_class = UserFollowSerializer
+
+    def get_queryset(self):
+        return User.objects.all().filter(followers__follower=self.kwargs["pk"])
