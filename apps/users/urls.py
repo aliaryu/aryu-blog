@@ -8,10 +8,10 @@ from .api.views import (
 
 
 urlpatterns = [
-    path("users/", UserListView.as_view(), name="user-list"),
+    path("", UserListView.as_view(), name="user-list"),
 
     # followers/followings urls
-    path("user/<int:pk>/followers/", UserFollowersView.as_view(), name="user-followers"),
-    path("user/<int:pk>/followings/", UserFollowingsView.as_view(), name="user-followings"),
+    path("<int:pk>/followers/", UserFollowersView.as_view(), name="user-followers"),
+    path("<int:pk>/followings/", UserFollowingsView.as_view(), name="user-followings"),
     
 ]
