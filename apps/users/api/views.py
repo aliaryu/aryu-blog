@@ -7,7 +7,7 @@ from ..models import User
 from django.db.models import Count
 
 
-class UserListView(generics.ListCreateAPIView):
+class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
 
     def get_queryset(self):
