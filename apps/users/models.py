@@ -164,7 +164,7 @@ class Profile(SoftDeleteModel, TimeStampModel):
         return f"{self.user.email}"
 
 
-class Follow(BaseModel):
+class Follow(models.Model):
     follower = models.ForeignKey(
         verbose_name = _("follower"),
         # supose user_id field, who start follow
