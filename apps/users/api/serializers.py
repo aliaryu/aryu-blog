@@ -37,9 +37,18 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "followers_url", "followings_url",
         ]
 
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.save()
 
-
-
+        profile_data = validated_data.pop('profile', None)
+        if profile_data:
+            profile_serializer = ProfileSerializer(instance.profile, data=profile_data, partial=True)
+            if profile_serializer.is_valid(raise_exception=True):
+                profile_serializer.save()
+        return instance
 
 
 class UserFollowSerializer(serializers.ModelSerializer):
