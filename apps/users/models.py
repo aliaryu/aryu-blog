@@ -197,7 +197,7 @@ class Follow(BaseModel):
 
             models.CheckConstraint(
                 condition = ~ models.Q(follower=models.F("following")),
-                name="same_follower_following",
+                name = "same_follower_following",
             ),
         ]
 

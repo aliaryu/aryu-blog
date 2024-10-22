@@ -1,11 +1,16 @@
 from rest_framework import generics
+from rest_framework import views
 from .serializers import (
     UserListSerializer,
     UserFollowSerializer,
     UserDetailSerializer,
 )
-from ..models import User
+from ..models import User, Follow
 from django.db.models import Count
+from rest_framework.response import Response
+from rest_framework import status
+from django.db import IntegrityError
+from django.utils.translation import gettext_lazy as _
 
 
 class UserListView(generics.ListAPIView):
@@ -40,3 +45,17 @@ class UserFollowingsView(generics.ListAPIView):
 
     def get_queryset(self):
         return User.objects.all().filter(followers__follower=self.kwargs["pk"])
+
+
+class FollowUnfollowView(views.APIView):
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            Follow.objects.create(follower=request.user, following_id=pk)
+            return Response(data={"detail": _("followed successfully")}, status=status.HTTP_201_CREATED)
+        except IntegrityError as error:
+            if "UNIQUE constraint" in str(error):
+                return Response({"detail": "you are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
+            elif "CHECK constraint" in str(error):
+                return Response({"detail": _("you cannot follow your self")}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as error:
+            return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
