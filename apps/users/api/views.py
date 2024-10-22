@@ -11,10 +11,20 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAdminUser,
+)
+from .permissions import (
+    IsUserOwnerOrReadOnly,
+    ReadOnly,
+)
 
 
 class UserListView(generics.ListAPIView):
     serializer_class = UserListSerializer
+    permission_classes = [AllowAny, ReadOnly]
 
     def get_queryset(self):
         return User.objects.all().select_related("profile").annotate(
@@ -25,6 +35,7 @@ class UserListView(generics.ListAPIView):
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserDetailSerializer
+    permission_classes = [IsUserOwnerOrReadOnly|IsAdminUser]
 
     def get_queryset(self):
         return User.objects.all().select_related("profile").annotate(
@@ -35,6 +46,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class UserFollowersView(generics.ListAPIView):
     serializer_class = UserFollowSerializer
+    permission_classes = [AllowAny, ReadOnly]
 
     def get_queryset(self):
         return User.objects.all().filter(followings__following=self.kwargs["pk"])
@@ -42,12 +54,15 @@ class UserFollowersView(generics.ListAPIView):
 
 class UserFollowingsView(generics.ListAPIView):
     serializer_class = UserFollowSerializer
+    permission_classes = [AllowAny, ReadOnly]
 
     def get_queryset(self):
         return User.objects.all().filter(followers__follower=self.kwargs["pk"])
 
 
 class FollowUnfollowView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, pk, *args, **kwargs):
         try:
             Follow.objects.create(follower=request.user, following_id=pk)
@@ -68,6 +83,8 @@ class FollowUnfollowView(views.APIView):
 
 
 class RemoveFollowerView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def delete(self, request, pk, *args, **kwargs):
         deleted, objs = Follow.objects.filter(follower=pk, following_id=request.user).delete()
         if deleted:
