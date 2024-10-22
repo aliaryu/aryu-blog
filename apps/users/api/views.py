@@ -20,11 +20,17 @@ from .permissions import (
     IsUserOwnerOrReadOnly,
     ReadOnly,
 )
+from rest_framework import pagination
+
+
+class SmallResultPagination(pagination.PageNumberPagination):
+    page_size = 5
 
 
 class UserListView(generics.ListAPIView):
     serializer_class = UserListSerializer
     permission_classes = [AllowAny, ReadOnly]
+    pagination_class = SmallResultPagination
 
     def get_queryset(self):
         return User.objects.all().select_related("profile").annotate(
@@ -47,6 +53,7 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
 class UserFollowersView(generics.ListAPIView):
     serializer_class = UserFollowSerializer
     permission_classes = [AllowAny, ReadOnly]
+    pagination_class = SmallResultPagination
 
     def get_queryset(self):
         return User.objects.all().filter(followings__following=self.kwargs["pk"])
@@ -55,6 +62,7 @@ class UserFollowersView(generics.ListAPIView):
 class UserFollowingsView(generics.ListAPIView):
     serializer_class = UserFollowSerializer
     permission_classes = [AllowAny, ReadOnly]
+    pagination_class = SmallResultPagination
 
     def get_queryset(self):
         return User.objects.all().filter(followers__follower=self.kwargs["pk"])
