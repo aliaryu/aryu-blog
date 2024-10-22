@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.blog",
     "apps.comments",
+    "apps.api",
 ]
 
 MIDDLEWARE = [
