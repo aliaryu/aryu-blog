@@ -10,6 +10,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["biography", "gender", "birth_date", "phone_number", "image", "profile_view"]
+        read_only_fields = ["profile_view"]
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -35,6 +36,10 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "followers_count", "followings_count",
             "followers_url", "followings_url",
         ]
+
+
+
+
 
 
 class UserFollowSerializer(serializers.ModelSerializer):
