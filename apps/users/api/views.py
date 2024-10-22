@@ -65,3 +65,11 @@ class FollowUnfollowView(views.APIView):
         if deleted:
             return Response({"detail": _("unfollowed successfully")}, status=status.HTTP_204_NO_CONTENT)
         return Response({"detail": _("you are not following this user")}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RemoveFollowerView(views.APIView):
+    def delete(self, request, pk, *args, **kwargs):
+        deleted, objs = Follow.objects.filter(follower=pk, following_id=request.user).delete()
+        if deleted:
+            return Response({"detail": _("follower removed successfully")}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": _("this user not following you")}, status=status.HTTP_400_BAD_REQUEST)
