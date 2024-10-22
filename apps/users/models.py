@@ -164,7 +164,7 @@ class Profile(SoftDeleteModel, TimeStampModel):
         return f"{self.user.email}"
 
 
-class Follow(BaseModel):
+class Follow(models.Model):
     follower = models.ForeignKey(
         verbose_name = _("follower"),
         # supose user_id field, who start follow
@@ -197,7 +197,7 @@ class Follow(BaseModel):
 
             models.CheckConstraint(
                 condition = ~ models.Q(follower=models.F("following")),
-                name="same_follower_following",
+                name = "same_follower_following",
             ),
         ]
 
