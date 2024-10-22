@@ -5,6 +5,7 @@ from .api.views import (
     UserFollowingsView,
     UserDetailView,
     FollowUnfollowView,
+    RemoveFollowerView,
 )
 
 
@@ -18,6 +19,8 @@ urlpatterns = [
     path("<int:pk>/followings/", UserFollowingsView.as_view(), name="user-followings"),
 
     # follow/unfollow urls
-    path("<int:pk>/follow-unfollow/", FollowUnfollowView.as_view(), name="follow-unfollow")
-    
+    path("<int:pk>/follow-unfollow/", FollowUnfollowView.as_view(), name="follow-unfollow"),
+
+    # remove follower
+    path("<int:pk>/remove-follower/", RemoveFollowerView.as_view(), name="remove-follower"),
 ]
