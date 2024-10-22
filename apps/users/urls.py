@@ -9,7 +9,7 @@ from .api.views import (
 )
 
 
-
+app_name = "users"
 urlpatterns = [
     path("", UserListView.as_view(), name="user-list"),
     path("<int:pk>/", UserDetailView.as_view(), name="user-detail"),
