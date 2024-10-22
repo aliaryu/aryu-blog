@@ -54,8 +54,14 @@ class FollowUnfollowView(views.APIView):
             return Response(data={"detail": _("followed successfully")}, status=status.HTTP_201_CREATED)
         except IntegrityError as error:
             if "UNIQUE constraint" in str(error):
-                return Response({"detail": "you are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": _("you are already following this user")}, status=status.HTTP_400_BAD_REQUEST)
             elif "CHECK constraint" in str(error):
                 return Response({"detail": _("you cannot follow your self")}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
             return Response({"detail": str(error)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, *args, **kwargs):
+        deleted, objs = Follow.objects.filter(follower=request.user, following_id=pk).delete()
+        if deleted:
+            return Response({"detail": _("unfollowed successfully")}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": _("you are not following this user")}, status=status.HTTP_400_BAD_REQUEST)
