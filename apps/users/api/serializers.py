@@ -17,6 +17,9 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["url", "id", "email", "first_name", "last_name",]
+        extra_kwargs = {
+            "url": {"view_name": "users:user-detail"},
+        }
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -26,8 +29,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
     followers_count = serializers.IntegerField(read_only=True)
     followings_count = serializers.IntegerField(read_only=True)
 
-    followers_url = serializers.HyperlinkedIdentityField(view_name="user-followers", lookup_field="pk")
-    followings_url = serializers.HyperlinkedIdentityField(view_name="user-followings", lookup_field="pk")
+    followers_url = serializers.HyperlinkedIdentityField(view_name="users:user-followers", lookup_field="pk")
+    followings_url = serializers.HyperlinkedIdentityField(view_name="users:user-followings", lookup_field="pk")
 
     class Meta:
         model = User
@@ -55,3 +58,6 @@ class UserFollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["url", "id", "email"]
+        extra_kwargs = {
+            "url": {"view_name": "users:user-detail"},
+        }
