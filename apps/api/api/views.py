@@ -7,6 +7,6 @@ class APIRootView(views.APIView):
     def get(self, request, *args, **kwargs):
         return Response({
             "login": reverse("rest_framework:login", request=request),
-            "user-list": reverse("user-list", request=request),
+            "user-list": reverse("users:user-list", request=request),
 
         })
