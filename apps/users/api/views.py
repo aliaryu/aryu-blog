@@ -21,6 +21,7 @@ from .permissions import (
     ReadOnly,
 )
 from rest_framework import pagination
+from rest_framework.filters import SearchFilter
 
 
 class SmallResultPagination(pagination.PageNumberPagination):
@@ -31,6 +32,8 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserListSerializer
     permission_classes = [AllowAny, ReadOnly]
     pagination_class = SmallResultPagination
+    filter_backends = [SearchFilter]
+    search_fields = ["email", "last_name"]
 
     def get_queryset(self):
         return User.objects.all().select_related("profile").annotate(
