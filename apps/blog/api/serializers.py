@@ -14,7 +14,8 @@ class TagSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
+    author_email = serializers.EmailField(source="author.email", read_only=True)
 
     class Meta:
         model = Post
-        fields = ["id", "author", "title", "content", "post_view", "tags"]
+        fields = ["id", "author_email", "title", "content", "post_view", "tags"]
