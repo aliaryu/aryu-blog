@@ -16,8 +16,14 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
     tags = TagSerializer(many=True)
     author_detail = serializers.HyperlinkedRelatedField(view_name="users:user-detail", read_only=True, source="author")
     author_email = serializers.EmailField(source="author.email", read_only=True)
-
+    content = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ["id" , "author_detail", "author_email", "title", "content", "post_view", "tags"]
+        fields = [
+            "id" , "author_detail", "author_email", "title", "content", "post_view",
+            "tags",
+        ]
+
+    def get_content(self, obj):
+        return obj.content[:17] + "..."

@@ -9,9 +9,6 @@ from .serializers import (
 )
 
 
-
-
-
 class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
 
