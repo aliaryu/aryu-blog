@@ -13,4 +13,4 @@ class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return Post.objects.all()
+        return Post.objects.all().select_related("author")
