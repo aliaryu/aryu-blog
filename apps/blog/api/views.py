@@ -7,10 +7,13 @@ from ..models import (
 from .serializers import (
     PostSerializer,
 )
+from django.db.models import Count
 
 
 class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
 
     def get_queryset(self):
-        return Post.objects.all().select_related("author")
+        return Post.objects.all().select_related("author").annotate(
+            likes_count = Count("likes", distinct=True)
+        )
