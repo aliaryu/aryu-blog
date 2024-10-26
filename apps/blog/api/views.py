@@ -27,4 +27,4 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(
             likes_count = Count("likes", distinct=True)
-        )
+        ).prefetch_related("tags")
