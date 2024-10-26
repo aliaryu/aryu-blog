@@ -22,6 +22,7 @@ class PostListView(generics.ListAPIView):
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostDetailSerializer
+    lookup_field = "slug"
 
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(
