@@ -6,12 +6,22 @@ from ..models import (
 )
 from .serializers import (
     PostSerializer,
+    PostDetailSerializer,
 )
 from django.db.models import Count
 
 
 class PostListView(generics.ListAPIView):
     serializer_class = PostSerializer
+
+    def get_queryset(self):
+        return Post.objects.all().select_related("author").annotate(
+            likes_count = Count("likes", distinct=True)
+        )
+
+
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = PostDetailSerializer
 
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(
