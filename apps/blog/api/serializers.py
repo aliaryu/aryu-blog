@@ -33,15 +33,15 @@ class PostListSerializer(serializers.ModelSerializer):
 
 class PostDetailSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True)
-    comments = CommentSerializer(many=True)
     author_detail = serializers.HyperlinkedRelatedField(view_name="users:user-detail", read_only=True, source="author")
     author_email = serializers.EmailField(source="author.email", read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
+    comments = serializers.HyperlinkedIdentityField(view_name="blog:post-comments", lookup_field="slug")
     
     class Meta:
         model = Post
         fields = [
             "id" , "author_detail", "author_email", "title", "content", "create_at", "update_at",
-            "allow_comments", "post_view", "likes_count", "tags", "comments",
+            "allow_comments", "post_view", "likes_count", "tags", "comments"
         ]
         read_only_fields = ["create_at", "update_at", "post_view"]
