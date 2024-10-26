@@ -5,14 +5,14 @@ from ..models import (
     Post,
 )
 from .serializers import (
-    PostSerializer,
+    PostListSerializer,
     PostDetailSerializer,
 )
 from django.db.models import Count
 
 
 class PostListView(generics.ListAPIView):
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
 
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(

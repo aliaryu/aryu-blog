@@ -12,7 +12,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ["tag_name"]
 
 
-class PostSerializer(serializers.ModelSerializer):
+class PostListSerializer(serializers.ModelSerializer):
     author_detail = serializers.HyperlinkedRelatedField(view_name="users:user-detail", read_only=True, source="author")
     author_email = serializers.EmailField(source="author.email", read_only=True)
     content = serializers.SerializerMethodField()
