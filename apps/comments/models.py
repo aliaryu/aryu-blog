@@ -16,12 +16,6 @@ class Comment(BaseModel):
         verbose_name = _("text"),
     )
 
-    answer = models.TextField(
-        verbose_name = _("answer"),
-        blank = True,
-        null = True,
-    )
-
     approve = models.BooleanField(
         verbose_name = _("approve"),
         default = False,
