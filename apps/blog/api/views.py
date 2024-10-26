@@ -12,6 +12,8 @@ from django.db.models import Count
 from apps.comments.api.serializers import CommentSerializer
 from apps.comments.models import Comment
 from django.db.models import Subquery
+from rest_framework.exceptions import PermissionDenied
+from django.utils.translation import gettext_lazy as _
 
 
 class PostListView(generics.ListAPIView):
@@ -33,7 +35,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
         ).prefetch_related("tags")
 
 
-class PostCommentsView(generics.ListAPIView):
+class PostCommentsView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
 
     def get_queryset(self):
@@ -41,4 +43,13 @@ class PostCommentsView(generics.ListAPIView):
         return Comment.objects.filter(
             content_type__model = "post",
             object_id = Subquery(post_id)
+        )
+
+    def perform_create(self, serializer):
+        post = Post.objects.get(slug=self.kwargs["slug"])
+        if not post.allow_comments:
+            raise PermissionDenied(_("Comments are not allowed on this post"))
+        serializer.save(
+            user = self.request.user,
+            content_object = post
         )
