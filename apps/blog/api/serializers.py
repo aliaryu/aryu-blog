@@ -42,3 +42,4 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "id" , "author_detail", "author_email", "title", "content",
             "post_view", "likes_count", "tags",
         ]
+        read_only_fields = ["post_view"]
