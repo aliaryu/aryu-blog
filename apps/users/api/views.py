@@ -20,12 +20,8 @@ from .permissions import (
     IsUserOwnerOrReadOnly,
     ReadOnly,
 )
-from rest_framework import pagination
 from rest_framework.filters import SearchFilter
-
-
-class SmallResultPagination(pagination.PageNumberPagination):
-    page_size = 5
+from apps.core.paginations import SmallResultPagination
 
 
 class UserListView(generics.ListAPIView):
