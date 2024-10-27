@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, views
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import (
@@ -56,9 +56,12 @@ class PostCommentsView(generics.ListCreateAPIView):
         )
 
 
-class PostLikeUnlikeView(generics.GenericAPIView):
+class PostLikeUnlikeView(views.APIView):
     queryset = Post.objects.all()
     lookup_field = "slug"
+
+    def get_object(self):
+        return Post.objects.get(slug=self.kwargs["slug"])
 
     def post(self, request, *args, **kwargs):
         post = self.get_object()
