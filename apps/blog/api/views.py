@@ -1,5 +1,6 @@
 from rest_framework import generics
-from rest_framework import views
+from rest_framework.response import Response
+from rest_framework import status
 from ..models import (
     Tag,
     Post,
@@ -53,3 +54,24 @@ class PostCommentsView(generics.ListCreateAPIView):
             user = self.request.user,
             content_object = post
         )
+
+
+class PostLikeUnlikeView(generics.GenericAPIView):
+    queryset = Post.objects.all()
+    lookup_field = "slug"
+
+    def post(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+        if post.likes.filter(id=user.id).exists():
+            return Response({"detail": _("you have already liked this post")}, status=status.HTTP_400_BAD_REQUEST)
+        post.likes.add(user)
+        return Response({"detail": _("post liked successfully")}, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, *args, **kwargs):
+        post = self.get_object()
+        user = request.user
+        if not post.likes.filter(id=user.id).exists():
+            return Response({"detail": _("you have not liked this post")}, status=status.HTTP_400_BAD_REQUEST)
+        post.likes.remove(user)
+        return Response({"detail": _("post unliked successfully")}, status=status.HTTP_204_NO_CONTENT)
