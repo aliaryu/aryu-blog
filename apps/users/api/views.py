@@ -22,6 +22,8 @@ from .permissions import (
 )
 from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
+from apps.blog.models import Post
+from apps.blog.api.serializers import PostListSerializer
 
 
 class UserListView(generics.ListAPIView):
@@ -97,3 +99,12 @@ class RemoveFollowerView(views.APIView):
         if deleted:
             return Response({"detail": _("follower removed successfully")}, status=status.HTTP_204_NO_CONTENT)
         return Response({"detail": _("this user not following you")}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LikedPostsView(generics.ListAPIView):
+    serializer_class = PostListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(likes=user)
