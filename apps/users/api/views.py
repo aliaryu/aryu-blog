@@ -104,7 +104,8 @@ class RemoveFollowerView(views.APIView):
 class LikedPostsView(generics.ListAPIView):
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = SmallResultPagination
 
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(likes=user)
+        return Post.objects.filter(likes=user).select_related("author")
