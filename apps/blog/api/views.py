@@ -8,6 +8,7 @@ from ..models import (
 from .serializers import (
     PostListSerializer,
     PostDetailSerializer,
+    PostCreateSerializer,
 )
 from django.db.models import Count
 from apps.comments.api.serializers import CommentSerializer
@@ -16,7 +17,6 @@ from django.db.models import Subquery
 from rest_framework.exceptions import PermissionDenied
 from django.utils.translation import gettext_lazy as _
 from rest_framework.permissions import (
-    AllowAny,
     IsAuthenticated,
     IsAdminUser,
 )
@@ -28,7 +28,7 @@ from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
 
 
-class PostListView(generics.ListAPIView):
+class PostListView(generics.ListCreateAPIView):
     serializer_class = PostListSerializer
     permission_classes = [IsAuthenticated|ReadOnly]
     pagination_class = SmallResultPagination
@@ -39,6 +39,14 @@ class PostListView(generics.ListAPIView):
         return Post.objects.all().select_related("author").annotate(
             likes_count = Count("likes", distinct=True)
         )
+    
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return PostCreateSerializer
+        return PostListSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
