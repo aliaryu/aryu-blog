@@ -32,7 +32,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many=True)
+    tags = serializers.SerializerMethodField()
     author_detail = serializers.HyperlinkedRelatedField(view_name="users:user-detail", read_only=True, source="author")
     author_email = serializers.EmailField(source="author.email", read_only=True)
     likes_count = serializers.IntegerField(read_only=True)
@@ -45,6 +45,12 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "allow_comments", "post_view", "likes_count", "tags", "comments"
         ]
         read_only_fields = ["create_at", "update_at", "post_view"]
+
+    def get_tags(self, obj):
+        return [tag.tag_name for tag in obj.tags.all()]
+
+    
+
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
