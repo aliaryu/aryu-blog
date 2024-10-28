@@ -6,6 +6,7 @@ from .api.views import (
     UserDetailView,
     FollowUnfollowView,
     RemoveFollowerView,
+    LikedPostsView,
 )
 
 
@@ -25,4 +26,7 @@ urlpatterns = [
 
     # remove follower url
     path("<int:pk>/remove-follower/", RemoveFollowerView.as_view(), name="remove-follower"),
+
+    # liked posts url
+    path("liked-posts/", LikedPostsView.as_view(), name="liked-posts")
 ]
