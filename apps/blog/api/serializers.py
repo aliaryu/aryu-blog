@@ -45,3 +45,24 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "allow_comments", "post_view", "likes_count", "tags", "comments"
         ]
         read_only_fields = ["create_at", "update_at", "post_view"]
+
+
+class PostCreateSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(
+        child = serializers.CharField(), write_only=True
+    )
+
+    class Meta:
+        model = Post
+        fields = ["title", "content", "tags", "allow_comments"]
+
+    def create(self, validated_data):
+        tags_list = validated_data.pop("tags", [])
+        post = Post.objects.create(**validated_data)
+        existing_tags = set(Tag.objects.filter(tag_name__in=tags_list).values_list("tag_name", flat=True))
+        new_tags = [Tag(tag_name=tag_name) for tag_name in tags_list if tag_name not in existing_tags]
+        if new_tags:
+            Tag.objects.bulk_create(new_tags)
+        all_tags = Tag.objects.filter(tag_name__in=tags_list)
+        post.tags.set(all_tags)
+        return post
