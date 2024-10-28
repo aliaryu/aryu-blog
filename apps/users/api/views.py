@@ -16,7 +16,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
     IsAdminUser,
 )
-from .permissions import (
+from apps.core.permissions import (
     IsUserOwnerOrReadOnly,
     ReadOnly,
 )
