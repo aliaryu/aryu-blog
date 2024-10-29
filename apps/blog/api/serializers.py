@@ -71,21 +71,24 @@ class PostDetailSerializer(serializers.ModelSerializer):
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
-    tags = serializers.ListField(
-        child = serializers.CharField(), write_only=True
-    )
+    tags = TagSerializer(many=True, required=False)
 
     class Meta:
         model = Post
         fields = ["title", "content", "tags", "allow_comments"]
 
-    def create(self, validated_data):
-        tags_list = validated_data.pop("tags", [])
-        post = Post.objects.create(**validated_data)
-        existing_tags = set(Tag.objects.filter(tag_name__in=tags_list).values_list("tag_name", flat=True))
-        new_tags = [Tag(tag_name=tag_name) for tag_name in tags_list if tag_name not in existing_tags]
+    def get_or_create_tags(self, tags):
+        tag_names = [tag.get("tag_name") for tag in tags]
+        existing_tag_names = set(Tag.objects.filter(tag_name__in=tag_names).values_list("tag_name", flat=True))
+        new_tags = [Tag(tag_name=tag_name) for tag_name in tag_names if tag_name not in existing_tag_names]
         if new_tags:
             Tag.objects.bulk_create(new_tags)
-        all_tags = Tag.objects.filter(tag_name__in=tags_list)
-        post.tags.set(all_tags)
+        all_tags = Tag.objects.filter(tag_name__in=tag_names)
+        return all_tags
+
+    def create(self, validated_data):
+        tags = validated_data.pop("tags", [])
+        post = Post.objects.create(**validated_data)
+        if tags:
+            post.tags.set(self.get_or_create_tags(tags))
         return post
