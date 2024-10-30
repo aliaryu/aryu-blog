@@ -2,7 +2,6 @@ from rest_framework import generics, views
 from rest_framework.response import Response
 from rest_framework import status
 from ..models import (
-    Tag,
     Post,
 )
 from .serializers import (
@@ -13,7 +12,7 @@ from .serializers import (
 from django.db.models import Count
 from apps.comments.api.serializers import CommentSerializer
 from apps.comments.models import Comment
-from django.db.models import Subquery
+from django.db.models import Subquery, F
 from rest_framework.exceptions import PermissionDenied
 from django.utils.translation import gettext_lazy as _
 from rest_framework.permissions import (
@@ -26,6 +25,10 @@ from apps.core.permissions import (
 )
 from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
+from apps.core.utils import get_client_ip
+from django.core.cache import cache
+from django.utils import timezone
+from datetime import timedelta
 
 
 class PostListView(generics.ListCreateAPIView):
@@ -55,9 +58,20 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsUserOwnerOrReadOnly|IsAdminUser]
 
     def get_queryset(self):
-        return Post.objects.all().select_related("author").annotate(
+        queryset = Post.objects.all().select_related("author").annotate(
             likes_count = Count("likes", distinct=True)
         ).prefetch_related("tags")
+
+        # post view update + cache ip to avoid increasing fake post view
+        slug = self.kwargs.get("slug")
+        user_ip = get_client_ip(self.request)
+        cache_key = f"post_view_{slug}_{user_ip}"
+        last_view_time = cache.get(cache_key)
+
+        if not last_view_time or timezone.now() - last_view_time > timedelta(seconds=10):
+            queryset.filter(slug=slug).update(post_view=F("post_view") + 1)
+            cache.set(cache_key, timezone.now(), timeout=600)
+        return queryset
 
 
 class PostCommentsView(generics.ListCreateAPIView):
