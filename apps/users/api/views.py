@@ -5,7 +5,11 @@ from .serializers import (
     UserFollowSerializer,
     UserDetailSerializer,
 )
-from ..models import User, Follow
+from ..models import (
+    User,
+    Profile,
+    Follow,
+)
 from django.db.models import Count
 from rest_framework.response import Response
 from rest_framework import status
@@ -24,6 +28,11 @@ from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
 from apps.blog.models import Post
 from apps.blog.api.serializers import PostListSerializer
+from django.db.models import F
+from apps.core.utils import get_client_ip
+from django.core.cache import cache
+from django.utils import timezone
+from datetime import timedelta
 
 
 class UserListView(generics.ListAPIView):
@@ -45,10 +54,21 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsUserOwnerOrReadOnly|IsAdminUser]
 
     def get_queryset(self):
-        return User.objects.all().select_related("profile").annotate(
+        queryset = User.objects.all().select_related("profile").annotate(
             followers_count = Count("followers", distinct=True),
             followings_count = Count("followings", distinct=True)
         )
+    
+        # profile view update + cache ip to avoid increasing fake profile view
+        user = self.request.user
+        user_ip = get_client_ip(self.request)
+        cache_key = f"profile_view_{user.id}_{user_ip}"
+        last_view_time = cache.get(cache_key)
+
+        if not last_view_time or timezone.now() - last_view_time > timedelta(minutes=10):
+            Profile.objects.filter(user=user).update(profile_view=F("profile_view") + 1)
+            cache.set(cache_key, timezone.now(), timeout=600)
+        return queryset
 
 
 class UserFollowersView(generics.ListAPIView):
