@@ -82,7 +82,7 @@ class Post(BaseModel):
     def save(self, *args, **kwargs):
         if not self.id:
             slugify_title = slugify(self.title, allow_unicode=True)
-            time_stamp = int(time())
+            time_stamp = int(time() * 1000)
             self.slug = f"{slugify_title}-{time_stamp}"
         super().save(*args, **kwargs)
 

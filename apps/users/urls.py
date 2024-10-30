@@ -6,21 +6,27 @@ from .api.views import (
     UserDetailView,
     FollowUnfollowView,
     RemoveFollowerView,
+    LikedPostsView,
 )
 
 
-
+app_name = "users"
 urlpatterns = [
+
+    # user list/detail urls
     path("", UserListView.as_view(), name="user-list"),
     path("<int:pk>/", UserDetailView.as_view(), name="user-detail"),
 
-    # followers/followings urls
+    # followers/followings url
     path("<int:pk>/followers/", UserFollowersView.as_view(), name="user-followers"),
     path("<int:pk>/followings/", UserFollowingsView.as_view(), name="user-followings"),
 
-    # follow/unfollow urls
+    # follow/unfollow url
     path("<int:pk>/follow-unfollow/", FollowUnfollowView.as_view(), name="follow-unfollow"),
 
-    # remove follower
+    # remove follower url
     path("<int:pk>/remove-follower/", RemoveFollowerView.as_view(), name="remove-follower"),
+
+    # liked posts url
+    path("liked-posts/", LikedPostsView.as_view(), name="liked-posts")
 ]
