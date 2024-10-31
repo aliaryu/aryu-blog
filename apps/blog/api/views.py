@@ -36,7 +36,7 @@ class PostListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated|ReadOnly]
     pagination_class = SmallResultPagination
     filter_backends = [SearchFilter]
-    search_fields = ["title"]
+    search_fields = ["title", "tags__tag_name"]
 
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(
