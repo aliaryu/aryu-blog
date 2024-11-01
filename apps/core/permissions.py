@@ -11,3 +11,8 @@ class IsUserOwnerOrReadOnly(permissions.BasePermission):
 class ReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.method in permissions.SAFE_METHODS
+
+
+class IsNotAuthenticated(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return not request.user.is_authenticated
