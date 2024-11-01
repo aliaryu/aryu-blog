@@ -36,6 +36,10 @@ from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
 from ..utils import send_activation_email
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.shortcuts import get_object_or_404
 
 
 class UserListView(generics.ListAPIView):
@@ -142,3 +146,25 @@ class UserRegisterView(generics.CreateAPIView):
     def perform_create(self, serializer):
         user = serializer.save()
         send_activation_email(user, self.request)
+
+
+class UserActivateView(views.APIView):
+    def get(self, request):
+        uidb64 = request.query_params.get("uid")
+        token = request.query_params.get("token")
+
+        if not uidb64 or not token:
+            return Response({"error": _("missing uid or token")}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = get_object_or_404(User, pk=uid)
+            if default_token_generator.check_token(user, token):
+                user.is_active = True
+                user.save()
+                return Response({"message": _("your account has been activated successfully")}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": _("activation link is invalid")}, status=status.HTTP_400_BAD_REQUEST)
+
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"error": _("activation link is invalid")}, status=status.HTTP_400_BAD_REQUEST)
