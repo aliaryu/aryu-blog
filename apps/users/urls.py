@@ -8,6 +8,7 @@ from .api.views import (
     RemoveFollowerView,
     LikedPostsView,
     UserRegisterView,
+    UserActivateView,
 )
 
 
@@ -32,4 +33,5 @@ urlpatterns = [
     path("liked-posts/", LikedPostsView.as_view(), name="liked-posts"),
 
     path("register/", UserRegisterView.as_view(), name="user-register"),
+    path("activate/", UserActivateView.as_view(), name="user-activate"),
 ]
