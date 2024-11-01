@@ -4,6 +4,7 @@ from .serializers import (
     UserListSerializer,
     UserFollowSerializer,
     UserDetailSerializer,
+    UserRegisterSerializer,
 )
 from ..models import (
     User,
@@ -23,6 +24,7 @@ from rest_framework.permissions import (
 from apps.core.permissions import (
     IsUserOwnerOrReadOnly,
     ReadOnly,
+    IsNotAuthenticated
 )
 from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
@@ -129,3 +131,9 @@ class LikedPostsView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         return Post.objects.filter(likes=user).select_related("author")
+
+
+class UserRegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+    permission_classes = [IsNotAuthenticated]
