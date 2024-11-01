@@ -35,6 +35,7 @@ from apps.core.utils import get_client_ip
 from django.core.cache import cache
 from django.utils import timezone
 from datetime import timedelta
+from ..utils import send_activation_email
 
 
 class UserListView(generics.ListAPIView):
@@ -137,3 +138,7 @@ class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [IsNotAuthenticated]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        send_activation_email(user, self.request)
