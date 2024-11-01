@@ -4,6 +4,7 @@ from ..models import (
     User,
     Profile,
 )
+from django.contrib.auth.password_validation import validate_password as v_password
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -64,6 +65,7 @@ class UserFollowSerializer(serializers.ModelSerializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True)
     confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
@@ -78,6 +80,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if data["password"] != data["confirm_password"]:
             raise serializers.ValidationError(_("passwords do not match"))
         return data
+    
+    def validate_password(self, value):
+        v_password(value)
+        return value
 
     def create(self, validated_data):
         validated_data.pop("confirm_password")  
