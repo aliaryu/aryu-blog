@@ -9,11 +9,9 @@ from django.conf import settings
 def send_activation_email(user, request):
     token = default_token_generator.make_token(user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    activation_link = request.build_absolute_uri(
-        reverse("users:user-activate", kwargs={"uidb64": uid, "token": token})
-    )
+    activation_link = f"{reverse('users:user-activate', request=request)}?uid={uid}&token={token}"
     subject = "Activate your account"
-    message = f"Hello {user.username},\n\nPlease activate your account using the link below:\n{activation_link}"
+    message = f"Hello {user.email},\nPlease activate your account using the link below:\n{activation_link}"
 
     send_mail(
         subject,
