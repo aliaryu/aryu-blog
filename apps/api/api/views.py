@@ -9,6 +9,7 @@ class APIRootView(views.APIView):
             "login": reverse("rest_framework:login", request=request),
             "user-register": reverse("users:user-register", request=request),
             "token-obtain-pair": reverse("token-obtain-pair", request=request),
+            "token-blacklist": reverse("token-blacklist", request=request),
             "token-refresh": reverse("token-refresh", request=request),
             "user-list": reverse("users:user-list", request=request),
             "post-list": reverse("blog:post-list", request=request),
