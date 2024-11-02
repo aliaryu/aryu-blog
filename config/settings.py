@@ -151,3 +151,15 @@ else:
     EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
     EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
     DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        [
+            "rest_framework.authentication.SessionAuthentication",
+            "rest_framework.authentication.BasicAuthentication",
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ] if config("BASIC_AUTH", default=True, cast=bool) else [
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ]
+    ),
+}
