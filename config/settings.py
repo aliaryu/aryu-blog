@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 
     # EXTERNAL APPS
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
 
     # INTERNAL APPS
     "apps.core",
