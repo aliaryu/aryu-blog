@@ -7,7 +7,7 @@ class APIRootView(views.APIView):
     def get(self, request, *args, **kwargs):
         return Response({
             "login": reverse("rest_framework:login", request=request),
+            "user-register": reverse("users:user-register", request=request),
             "user-list": reverse("users:user-list", request=request),
-            "post-list": reverse("blog:post-list", request=request)
-
+            "post-list": reverse("blog:post-list", request=request),
         })
