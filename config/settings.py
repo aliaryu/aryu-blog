@@ -179,7 +179,7 @@ SIMPLE_JWT = {
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Aryu Blog API",
-    "DESCRIPTION": "Created by Ali Aryu",
+    "DESCRIPTION": "",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
