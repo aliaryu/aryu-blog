@@ -1,5 +1,6 @@
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
 
     # EXTERNAL APPS
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
 
     # INTERNAL APPS
     "apps.core",
@@ -151,3 +153,23 @@ else:
     EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
     EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
     DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        [
+            "rest_framework.authentication.SessionAuthentication",
+            "rest_framework.authentication.BasicAuthentication",
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ] if config("BASIC_AUTH", default=True, cast=bool) else [
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+        ]
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+}

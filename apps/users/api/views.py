@@ -22,9 +22,10 @@ from rest_framework.permissions import (
     IsAdminUser,
 )
 from apps.core.permissions import (
+    IsUserOwnerPost,
     IsUserOwnerOrReadOnly,
     ReadOnly,
-    IsNotAuthenticated
+    IsNotAuthenticated,
 )
 from rest_framework.filters import SearchFilter
 from apps.core.paginations import SmallResultPagination
@@ -130,7 +131,7 @@ class RemoveFollowerView(views.APIView):
 
 class LikedPostsView(generics.ListAPIView):
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsUserOwnerPost]
     pagination_class = SmallResultPagination
 
     def get_queryset(self):
