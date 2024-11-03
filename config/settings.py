@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # EXTERNAL APPS
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
 
     # INTERNAL APPS
     "apps.core",
@@ -164,6 +165,8 @@ REST_FRAMEWORK = {
             "rest_framework_simplejwt.authentication.JWTAuthentication",
         ]
     ),
+
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -172,4 +175,11 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": True,
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Aryu Blog API",
+    "DESCRIPTION": "Created by Ali Aryu",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
