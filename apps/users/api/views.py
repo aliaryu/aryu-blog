@@ -68,13 +68,12 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
     
         # profile view update + cache ip to avoid increasing fake profile view
-        user = self.request.user
         user_ip = get_client_ip(self.request)
-        cache_key = f"profile_view_{user.id}_{user_ip}"
+        cache_key = f"profile_view_{user_ip}"
         last_view_time = cache.get(cache_key)
 
         if not last_view_time or timezone.now() - last_view_time > timedelta(minutes=10):
-            Profile.objects.filter(user=user).update(profile_view=F("profile_view") + 1)
+            Profile.objects.filter(user_id=self.kwargs.get("pk")).update(profile_view=F("profile_view") + 1)
             cache.set(cache_key, timezone.now(), timeout=600)
         return queryset
 
