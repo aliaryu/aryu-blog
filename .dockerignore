@@ -25,7 +25,4 @@ db.sqlite3-journal
 README.md
 docker-compose.yml
 
-fixtures/
-requirements/
-
 _shell.py
