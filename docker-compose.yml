@@ -7,8 +7,6 @@ services:
       dockerfile: .Dockerfile
       args:
         DEBUG: ${DEBUG}
-    volumes:
-      - .:/app
     ports:
       - "8000:8000"
     environment:
@@ -26,6 +24,13 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_DB=${REDIS_DB}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - EMAIL_USE_SSL=${EMAIL_USE_SSL}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
     command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - database
