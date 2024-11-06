@@ -7,6 +7,8 @@ services:
       dockerfile: .Dockerfile
       args:
         DEBUG: ${DEBUG}
+    volumes:
+      - media:/app/media 
     ports:
       - "8000:8000"
     environment:
@@ -51,6 +53,10 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
+  media:
   postgres_data:
+  redis_data:
