@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: aryu_blog
+    build:
+      context: .
+      dockerfile: .Dockerfile
+      args:
+        DEBUG: ${DEBUG}
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=${DEBUG}
+    command: python manage.py runserver 0.0.0.0:8000
