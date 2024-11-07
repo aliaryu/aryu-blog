@@ -53,6 +53,12 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "database", "-p", "5432"]
+      retries: 5
+      interval: 5s
+      start_period: 10s
+      timeout: 10s
 
   redis:
     container_name: redis
