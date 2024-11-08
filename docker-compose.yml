@@ -36,6 +36,7 @@ services:
       - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
     command: |
       sh -c "
+        /usr/local/bin/wait-for-it.sh database:5432 -- 
         python manage.py makemigrations &&
         python manage.py migrate &&
         python manage.py collectstatic --noinput &&
@@ -66,12 +67,6 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-h", "database", "-p", "5432"]
-      retries: 5
-      interval: 5s
-      start_period: 10s
-      timeout: 10s
 
   redis:
     container_name: redis
