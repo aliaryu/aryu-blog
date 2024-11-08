@@ -116,6 +116,9 @@ if DEBUG:
     INSTALLED_APPS.append("debug_toolbar")
     MIDDLEWARE.insert(3, "debug_toolbar.middleware.DebugToolbarMiddleware")
     INTERNAL_IPS = ["127.0.0.1", "localhost"]
+    from socket import gethostname, gethostbyname
+    ip = gethostbyname(gethostname())
+    INTERNAL_IPS += [ip[:-1] + "1"]
 
 else:
 
