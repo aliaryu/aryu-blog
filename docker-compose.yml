@@ -39,8 +39,14 @@ services:
         echo 'sleep 10 seconds ...' && sleep 10 &&
         python manage.py makemigrations &&
         python manage.py migrate &&
-        python manage.py collectstatic --noinput &&
-        gunicorn config.wsgi:application --bind 0.0.0.0:8000
+        if [ \"$DEBUG\" -eq 1 ]; then
+          echo 'running in development mode ...';
+          python manage.py runserver 0.0.0.0:8000;
+        else
+          echo 'running in production mode ...';
+          python manage.py collectstatic --noinput &&
+          gunicorn config.wsgi:application --bind 0.0.0.0:8000;
+        fi
       "
     depends_on:
       - database
