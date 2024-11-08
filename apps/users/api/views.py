@@ -54,7 +54,7 @@ class UserListView(generics.ListAPIView):
         return User.objects.all().select_related("profile").annotate(
             followers_count = Count("followers", distinct=True),
             followings_count = Count("followings", distinct=True)
-        )
+        ).order_by("-date_joined")
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
