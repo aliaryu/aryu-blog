@@ -10,8 +10,6 @@ services:
     volumes:
       - media:/app/media 
       - staticfiles:/app/staticfiles
-    ports:
-      - "8000:8000"
     environment:
       - DEBUG=${DEBUG}
       - BASIC_AUTH=${BASIC_AUTH}
@@ -27,6 +25,10 @@ services:
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_DB=${REDIS_DB}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - REDIS_DB_FOR_CELERY=${REDIS_DB_FOR_CELERY}
       - EMAIL_HOST=${EMAIL_HOST}
       - EMAIL_PORT=${EMAIL_PORT}
       - EMAIL_HOST_USER=${EMAIL_HOST_USER}
@@ -50,6 +52,58 @@ services:
       "
     depends_on:
       - database
+      - redis
+      - rabbitmq
+  
+  celery:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: .Dockerfile
+      args:
+        DEBUG: ${DEBUG}
+    volumes:
+      - media:/app/media 
+      - staticfiles:/app/staticfiles
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=${DEBUG}
+      - BASIC_AUTH=${BASIC_AUTH}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - LANGUAGE_CODE=${LANGUAGE_CODE}
+      - TIME_ZONE=${TIME_ZONE}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - REDIS_DB_FOR_CELERY=${REDIS_DB_FOR_CELERY}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS}
+      - EMAIL_USE_SSL=${EMAIL_USE_SSL}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
+    command: |
+      sh -c "
+        if [ \"$DEBUG\" -eq 1 ]; then
+          echo 'running celery is diabled in development mode ...';
+        else
+          echo 'running celery ...';
+          celery -A config worker --loglevel=info
+        fi
+      "
+    depends_on:
+      - web
       - redis
       - rabbitmq
 
