@@ -21,8 +21,8 @@ class SoftDeleteQuerySet(models.QuerySet):
     restore.queryset_only = True
 
     def hard_delete(self):
-        raise NotImplementedError
-        # return super().delete()
+        # raise NotImplementedError
+        return super().delete()
 
     hard_delete.queryset_only = True
 
@@ -66,8 +66,8 @@ class SoftDeleteModel(models.Model):
         self.save()
 
     def hard_delete(self):
-        raise NotImplementedError
-        # super().delete()
+        # raise NotImplementedError
+        super().delete()
 
 
 class TimeStampModel(models.Model):

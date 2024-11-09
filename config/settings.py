@@ -149,15 +149,31 @@ else:
         },
     }
 
+    # RABBITMQ & CELERY
+    RABBITMQ_DEFAULT_USER = config("RABBITMQ_DEFAULT_USER")
+    RABBITMQ_DEFAULT_PASS = config("RABBITMQ_DEFAULT_PASS")
+    RABBITMQ_PORT = config("RABBITMQ_PORT")
+    REDIS_DB_FOR_CELERY = config("REDIS_DB_FOR_CELERY")
+    CELERY_BROKER_URL = f"amqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@rabbitmq:{RABBITMQ_PORT}//"
+    CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB_FOR_CELERY}"
+    CELERY_TASK_SERIALIZER = "json"
+    CELERY_ACCEPT_CONTENT = ["json"]
+    CELERY_RESULT_SERIALIZER = "json"
+    CELERY_TIMEZONE = TIME_ZONE
+
     # EMAIL
-    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = config("EMAIL_HOST")
-    EMAIL_PORT = config("EMAIL_PORT")
-    EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-    EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
-    EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
-    DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+    USE_REAL_EMAIL = config("USE_REAL_EMAIL", default=False, cast=bool)
+    if USE_REAL_EMAIL:
+        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+        EMAIL_HOST = config("EMAIL_HOST")
+        EMAIL_PORT = config("EMAIL_PORT")
+        EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+        EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+        EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
+        EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool)
+        DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+    else:
+        EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
