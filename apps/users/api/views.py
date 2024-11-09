@@ -54,7 +54,7 @@ class UserListView(generics.ListAPIView):
         return User.objects.all().select_related("profile").annotate(
             followers_count = Count("followers", distinct=True),
             followings_count = Count("followings", distinct=True)
-        )
+        ).order_by("-date_joined")
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -68,13 +68,13 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         )
     
         # profile view update + cache ip to avoid increasing fake profile view
-        user = self.request.user
+        profile_id = self.kwargs.get("pk")
         user_ip = get_client_ip(self.request)
-        cache_key = f"profile_view_{user.id}_{user_ip}"
+        cache_key = f"profile_view_{profile_id}_{user_ip}"
         last_view_time = cache.get(cache_key)
 
         if not last_view_time or timezone.now() - last_view_time > timedelta(minutes=10):
-            Profile.objects.filter(user=user).update(profile_view=F("profile_view") + 1)
+            Profile.objects.filter(user_id=profile_id).update(profile_view=F("profile_view") + 1)
             cache.set(cache_key, timezone.now(), timeout=600)
         return queryset
 

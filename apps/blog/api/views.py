@@ -41,7 +41,7 @@ class PostListView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Post.objects.all().select_related("author").annotate(
             likes_count = Count("likes", distinct=True)
-        )
+        ).order_by("-create_at")
     
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -84,7 +84,7 @@ class PostCommentsView(generics.ListCreateAPIView):
         return Comment.objects.filter(
             content_type__model = "post",
             object_id = Subquery(post_id)
-        )
+        ).order_by("-create_at")
 
     def perform_create(self, serializer):
         post = Post.objects.get(slug=self.kwargs["slug"])
