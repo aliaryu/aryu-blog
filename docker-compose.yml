@@ -47,7 +47,7 @@ services:
         else
           echo 'running in production mode ...';
           python manage.py collectstatic --noinput &&
-          gunicorn config.wsgi:application --bind 0.0.0.0:8000;
+          gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-level debug;
         fi
       "
     depends_on:
@@ -99,7 +99,7 @@ services:
           echo 'running celery is diabled in development mode ...';
         else
           echo 'running celery ...';
-          celery -A config worker --loglevel=info
+          celery -A config worker --loglevel=debug
         fi
       "
     depends_on:
@@ -139,7 +139,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
-    image: rabbitmq:alpine
+    image: rabbitmq
     ports:
       - "5672:5672"
     environment:

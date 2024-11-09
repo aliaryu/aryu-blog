@@ -9,7 +9,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if not DEBUG:
         if created:
             from .tasks import create_profile
-            create_profile.delay(instance)
+            create_profile.delay(instance.id)
     else:
         if created:
             Profile.objects.create(user=instance)

@@ -7,5 +7,5 @@ if not DEBUG:
     from .models import Profile
 
     @shared_task
-    def create_profile(user):
-        Profile.objects.create(user=user)
+    def create_profile(user_id):
+        Profile.objects.create(user_id=user_id)
