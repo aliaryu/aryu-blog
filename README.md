@@ -16,7 +16,7 @@ This project is a REST API built with Django and DRF, featuring user management,
 ## Commit Conventions
 This repository uses special rules for commit messages. Syntax & Example:
 
-    <type>(<scope>): <message>
+    <type>(<scope>) : <message>
     <description>
 
     $ git commit -m "docs(readme): update project documention" -m "description"
@@ -35,6 +35,18 @@ If you don't want to use docker, then **DEBUG** must be **True** (in **.env** fi
     pip install -r requirements/development.txt
     python manage.py makemigrations
     python manage.py migrate
+
+    # Run this command only once to load test data into the database.
     python manage.py loaddata fixtures/data.json
+
     python manage.py runserver
 
+If you want to use docker, according to the **DEBUG** , you can run the following command:
+
+    docker-compose build
+    docker-compose up -d
+
+    # Run this command only once to load test data into the database.
+    docker-compose exec web python manage.py loaddata fixtures/data.json
+
+After loading the data into the database and running the project, you can log in with the superuser account **a@a.com** and password **1** to review the project.
