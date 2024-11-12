@@ -49,4 +49,4 @@ If you want to use docker, according to the **DEBUG** , you can run the followin
     # Run this command only once to load test data into the database.
     docker-compose exec web python manage.py loaddata fixtures/data.json
 
-After loading the data into the database and running the project, you can log in with the superuser account **a@a.com** and password **1** to review the project.
+After loading the data into the database and running the project, you can log in with a superuser account username: **`a@a.com`** and password: **1** to review the project.
