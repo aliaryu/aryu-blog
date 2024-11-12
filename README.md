@@ -23,3 +23,18 @@ This repository uses special rules for commit messages. Syntax & Example:
 
 Complete information: [commit conventions](https://github.com/aliaryu/aryu-blog/blob/feature/readme/docs/commit-conventions.md)
 
+## How To Use
+First, clone the project:
+
+    https://github.com/aliaryu/aryu-blog.git
+
+Secondly, you should create a **.env** file with contents similar to **.env.example** , (You can modify the **.env** configuration as needed, but be sure to update the **docker-compose.yml** file accordingly).
+
+If you don't want to use docker, then **DEBUG** must be **True** (in **.env** file: **DEBUG=1**) , Now create the virtual environment for python (depends on OS) and execute the following commands in order:
+
+    pip install -r requirements/development.txt
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py loaddata fixtures/data.json
+    python manage.py runserver
+
